@@ -68,6 +68,7 @@ return_status mctp_encode_message(IN uint32_t *session_id, IN uintn message_size
     uintn alignment;
     mctp_message_header_t *mctp_message_header;
 
+
     alignment = MCTP_ALIGNMENT;
     aligned_message_size =
         (message_size + (alignment - 1)) & ~(alignment - 1);
