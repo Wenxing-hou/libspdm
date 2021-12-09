@@ -63,6 +63,7 @@ return_status mctp_encode_message(IN uint32_t *session_id, IN uintn message_size
                   IN void *message,
                   IN OUT uintn *transport_message_size,
                   OUT void *transport_message)
+
 				  
 
 {
