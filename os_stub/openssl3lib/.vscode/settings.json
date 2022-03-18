@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "rand.h": "c",
+        "aes.h": "c",
+        "store.h": "c"
+    }
+}
