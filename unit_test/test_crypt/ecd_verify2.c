@@ -63,6 +63,8 @@ uint8_t m_libspdm_ecd_test_pem_key[] = {
  **/
 bool libspdm_validate_crypt_ecd_2(void)
 {
+    /*Ed key Retrieving is only support in openssl api*/
+    #if LIBSPDM_USE_OPENSSL
     bool status;
     void *ecd_priv_key;
     void *ecd_pub_key;
@@ -79,7 +81,7 @@ bool libspdm_validate_crypt_ecd_2(void)
                                                   &ecd_priv_key);
     if (!status) {
         libspdm_my_print("[Fail]");
-        goto Exit;
+        return false;
     } else {
         libspdm_my_print("[Pass]");
     }
@@ -91,7 +93,7 @@ bool libspdm_validate_crypt_ecd_2(void)
     if (!status) {
         libspdm_my_print("[Fail]");
         libspdm_ecd_free(ecd_priv_key);
-        goto Exit;
+        return false;
     } else {
         libspdm_my_print("[Pass]");
     }
@@ -105,7 +107,7 @@ bool libspdm_validate_crypt_ecd_2(void)
         libspdm_my_print("[Fail]");
         libspdm_ecd_free(ecd_priv_key);
         libspdm_ecd_free(ecd_pub_key);
-        goto Exit;
+        return false;
     } else {
         libspdm_my_print("[Pass]");
     }
@@ -117,7 +119,7 @@ bool libspdm_validate_crypt_ecd_2(void)
         libspdm_my_print("[Fail]");
         libspdm_ecd_free(ecd_priv_key);
         libspdm_ecd_free(ecd_pub_key);
-        goto Exit;
+        return false;
     } else {
         libspdm_my_print("[Pass]\n");
     }
@@ -125,7 +127,7 @@ bool libspdm_validate_crypt_ecd_2(void)
     libspdm_ecd_free(ecd_priv_key);
     libspdm_ecd_free(ecd_pub_key);
 
-Exit:
+    #endif /*LIBSPDM_USE_OPENSSL*/
     return true;
 }
 

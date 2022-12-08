@@ -272,6 +272,8 @@ bool libspdm_validate_crypt_digest(void)
     libspdm_my_print("[Pass]\n");
     #endif
 
+    /*SHA3 and SM3 are only support in openssl api*/
+    #if LIBSPDM_USE_OPENSSL
     #if LIBSPDM_SHA3_256_SUPPORT
     /* SHA3-256 digest validation. */
     libspdm_my_print("- SHA3-256: ");
@@ -316,6 +318,7 @@ bool libspdm_validate_crypt_digest(void)
         libspdm_my_print("[Pass]\n");
     } else {
         libspdm_my_print("[Failed]\n");
+        return status;
     }
     #endif /* LIBSPDM_SHA3_256_SUPPORT */
 
@@ -363,6 +366,7 @@ bool libspdm_validate_crypt_digest(void)
         libspdm_my_print("[Pass]\n");
     } else {
         libspdm_my_print("[Failed]\n");
+        return status;
     }
     #endif /* LIBSPDM_SHA3_384_SUPPORT */
 
@@ -410,6 +414,7 @@ bool libspdm_validate_crypt_digest(void)
         libspdm_my_print("[Pass]\n");
     } else {
         libspdm_my_print("[Failed]\n");
+        return status;
     }
     #endif /* LIBSPDM_SHA3_512_SUPPORT */
 
@@ -432,8 +437,10 @@ bool libspdm_validate_crypt_digest(void)
         libspdm_my_print("[Pass]\n");
     } else {
         libspdm_my_print("[Failed]\n");
+        return status;
     }
     #endif /* LIBSPDM_SM3_256_SUPPORT */
+    #endif /*LIBSPDM_USE_OPENSSL*/
     #endif
 
     return true;

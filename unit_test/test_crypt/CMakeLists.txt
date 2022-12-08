@@ -38,6 +38,10 @@ SET(test_crypt_LIBRARY
     spdm_crypt_ext_lib
 )
 
+if(CRYPTO STREQUAL "openssl")
+    add_definitions(-DLIBSPDM_USE_OPENSSL=1)
+endif()
+
 if(TOOLCHAIN STREQUAL "ARM_DS2022")
     SET(test_crypt_LIBRARY ${test_crypt_LIBRARY} armbuild_lib)
 endif()

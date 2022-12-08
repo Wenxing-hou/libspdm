@@ -87,6 +87,8 @@ bool libspdm_validate_crypt_hmac(void)
     libspdm_my_print("[Pass]\n");
     #endif /* LIBSPDM_SHA256_SUPPORT */
 
+    /*SHA3 and SM3 are only support in openssl api*/
+    #if LIBSPDM_USE_OPENSSL
     #if LIBSPDM_SHA3_256_SUPPORT
     /* HMAC-SHA3-256 digest Validation*/
     libspdm_my_print("- HMAC-SHA3-256: ");
@@ -133,7 +135,7 @@ bool libspdm_validate_crypt_hmac(void)
     hmac_ctx = libspdm_hmac_sm3_256_new();
     if (hmac_ctx == NULL) {
         libspdm_my_print("[Fail]\n");
-        return true;
+        return false;
     }
 
     status = libspdm_hmac_sm3_256_set_key(hmac_ctx, m_libspdm_hmac_sha256_key, 20);
@@ -162,6 +164,7 @@ bool libspdm_validate_crypt_hmac(void)
     free_pool(hmac_ctx);
     libspdm_my_print("[Pass]\n");
     #endif /* LIBSPDM_SM3_256_SUPPORT */
+    #endif /*LIBSPDM_USE_OPENSSL*/
 
     return true;
 }

@@ -120,10 +120,13 @@ bool libspdm_cryptest_main(void)
     #endif /* (LIBSPDM_EDDSA_ED25519_SUPPORT) || (LIBSPDM_EDDSA_ED448_SUPPORT) */
 
     #if LIBSPDM_SM2_DSA_SUPPORT
-    status = libspdm_validate_crypt_sm2();
-    if (!status) {
-        return status;
-    }
+
+    /* the Crypto SM2 key Exchange is not support now
+     * status = libspdm_validate_crypt_sm2();
+     * if (!status) {
+     *     return status;
+     * }
+     **/
 
     status = libspdm_validate_crypt_sm2_2();
     if (!status) {
@@ -150,7 +153,7 @@ int main(void)
 {
     int return_value = 0;
 
-    if (libspdm_cryptest_main() != 0) {
+    if (libspdm_cryptest_main() == false) {
         return_value = 1;
     }
 

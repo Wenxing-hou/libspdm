@@ -166,6 +166,8 @@ bool libspdm_validate_crypt_hkdf(void)
     libspdm_my_print("[Pass]\n");
     #endif /* LIBSPDM_SHA256_SUPPORT */
 
+    /*SHA3 and SM3 are only support in openssl api*/
+    #if LIBSPDM_USE_OPENSSL
     #if LIBSPDM_SHA3_256_SUPPORT
     /* HKDF-SHA3-256 digest validation. */
     libspdm_my_print("- HKDF-SHA3_256: ");
@@ -223,7 +225,7 @@ bool libspdm_validate_crypt_hkdf(void)
         );
     if (!status) {
         libspdm_my_print("[Fail]\n");
-        return true;
+        return false;
     }
 
     libspdm_zero_mem(out, sizeof(out));
@@ -253,6 +255,7 @@ bool libspdm_validate_crypt_hkdf(void)
 
     libspdm_my_print("[Pass]\n");
     #endif /* LIBSPDM_SM3_256_SUPPORT */
+    #endif /*LIBSPDM_USE_OPENSSL*/
 
     #if LIBSPDM_SHA384_SUPPORT
     /* HKDF-SHA-384 digest validation. */

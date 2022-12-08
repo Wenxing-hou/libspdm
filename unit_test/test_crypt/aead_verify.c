@@ -252,57 +252,8 @@ bool libspdm_validate_crypt_aead_cipher(void)
     #if LIBSPDM_AEAD_SM4_SUPPORT
     libspdm_my_print("\n- SM4-GCM Encryption: ");
 
-    OutBufferSize = sizeof(OutBuffer);
-    OutTagSize = sizeof(m_libspdm_sm4_gcm_tag);
-    status =
-        libspdm_aead_sm4_gcm_encrypt(m_libspdm_sm4_gcm_key, sizeof(m_libspdm_sm4_gcm_key),
-                                     m_libspdm_sm4_gcm_iv, sizeof(m_libspdm_sm4_gcm_iv),
-                                     m_libspdm_sm4_gcm_aad, sizeof(m_libspdm_sm4_gcm_aad),
-                                     m_libspdm_sm4_gcm_pt, sizeof(m_libspdm_sm4_gcm_pt), OutTag,
-                                     OutTagSize, OutBuffer, &OutBufferSize);
-    if (!status) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    if (OutBufferSize != sizeof(m_libspdm_sm4_gcm_ct)) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    if (libspdm_const_compare_mem(OutBuffer, m_libspdm_sm4_gcm_ct,
-                                  sizeof(m_libspdm_sm4_gcm_ct)) != 0) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    if (libspdm_const_compare_mem(OutTag, m_libspdm_sm4_gcm_tag,
-                                  sizeof(m_libspdm_sm4_gcm_tag)) != 0) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    libspdm_my_print("[Pass]");
-
-    libspdm_my_print("\n- SM4-GCM Decryption: ");
-    status = libspdm_aead_sm4_gcm_decrypt(m_libspdm_sm4_gcm_key, sizeof(m_libspdm_sm4_gcm_key),
-                                          m_libspdm_sm4_gcm_iv, sizeof(m_libspdm_sm4_gcm_iv),
-                                          m_libspdm_sm4_gcm_aad, sizeof(m_libspdm_sm4_gcm_aad),
-                                          m_libspdm_sm4_gcm_ct, sizeof(m_libspdm_sm4_gcm_ct),
-                                          m_libspdm_sm4_gcm_tag, sizeof(m_libspdm_sm4_gcm_tag),
-                                          OutBuffer, &OutBufferSize);
-    if (!status) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    if (OutBufferSize != sizeof(m_libspdm_sm4_gcm_pt)) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-    if (libspdm_const_compare_mem(OutBuffer, m_libspdm_sm4_gcm_pt,
-                                  sizeof(m_libspdm_sm4_gcm_pt)) != 0) {
-        libspdm_my_print("[Fail]");
-        goto Exit;
-    }
-
-    libspdm_my_print("[Pass]");
-Exit:
+    /* the sm4_gcm is not support now*/
+    libspdm_my_print("\n- SM4-GCM Encryption is not support");
     #endif /* LIBSPDM_AEAD_SM4_SUPPORT */
 
     libspdm_my_print("\n");
