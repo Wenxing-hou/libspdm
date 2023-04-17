@@ -5,7 +5,7 @@
  **/
 
 #include "library/spdm_transport_test_lib.h"
-
+#include <stdio.h>
 /**
  * Get sequence number in an SPDM secure message.
  *
@@ -82,9 +82,28 @@ libspdm_return_t libspdm_test_encode_message(const uint32_t *session_id, size_t 
     aligned_message_size =
         (message_size + (alignment - 1)) & ~(alignment - 1);
 
+    LIBSPDM_ASSERT(*transport_message_size >=
+                   aligned_message_size + sizeof(libspdm_test_message_header_t));
+    if (*transport_message_size <
+        aligned_message_size + sizeof(libspdm_test_message_header_t)) {
+
+printf("transport_message_size   <  failed \n");
+        *transport_message_size = aligned_message_size +
+                                  sizeof(libspdm_test_message_header_t);
+        return LIBSPDM_STATUS_BUFFER_TOO_SMALL;
+    }
+
+printf("test 1 \n");
+
+// printf("aligned_message_size is %zu \n", aligned_message_size);
+// printf("message_size is %zu \n", message_size);
+
     *transport_message_size =
         aligned_message_size + sizeof(libspdm_test_message_header_t);
+// printf("test 2 \n");
     *transport_message = (uint8_t *)message - sizeof(libspdm_test_message_header_t);
+
+
     test_message_header = *transport_message;
     if (session_id != NULL) {
         test_message_header->message_type =
@@ -96,6 +115,10 @@ libspdm_return_t libspdm_test_encode_message(const uint32_t *session_id, size_t 
     } else {
         test_message_header->message_type = LIBSPDM_TEST_MESSAGE_TYPE_SPDM;
     }
+
+// printf("libspdm_test_encode_message test_message_header->message_type is \n");
+
+
     libspdm_zero_mem((uint8_t *)message + message_size,
                      aligned_message_size - message_size);
     return LIBSPDM_STATUS_SUCCESS;
@@ -129,6 +152,8 @@ libspdm_return_t libspdm_test_decode_message(uint32_t **session_id,
 
     test_message_header = transport_message;
 
+// printf("libspdm_test_decode_message test_message_header->message_type is %d \n", test_message_header->message_type);
+
     switch (test_message_header->message_type) {
     case LIBSPDM_TEST_MESSAGE_TYPE_SECURED_TEST:
         LIBSPDM_ASSERT(session_id != NULL);
@@ -148,7 +173,7 @@ libspdm_return_t libspdm_test_decode_message(uint32_t **session_id,
         }
         break;
     default:
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP23;
     }
 
     LIBSPDM_ASSERT(((transport_message_size - sizeof(libspdm_test_message_header_t)) &

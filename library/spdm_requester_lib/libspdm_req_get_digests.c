@@ -64,7 +64,7 @@ static libspdm_return_t libspdm_try_get_digest(libspdm_context_t *spdm_context,
     if (!libspdm_is_capabilities_flag_supported(
             spdm_context, true, 0,
             SPDM_GET_CAPABILITIES_RESPONSE_FLAGS_CERT_CAP)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
     }
     if (spdm_context->connection_info.connection_state < LIBSPDM_CONNECTION_STATE_NEGOTIATED) {
         return LIBSPDM_STATUS_INVALID_STATE_LOCAL;

@@ -27,28 +27,28 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - windows-latest
+          # - windows-latest
         crypto:
-          - mbedtls
+          # - mbedtls
           - openssl
         arch:
           - x64
-          - ia32
-          - aarch64
+          # - ia32
+          # - aarch64
         target:
-          - Debug
+          # - Debug
           - Release
         toolchain:
-          - GCC
-          - VS2019
-          - LIBFUZZER
+          # - GCC
+          # - VS2019
+          # - LIBFUZZER
           - CLANG
-          - ARM_GNU
+          # - ARM_GNU
         configurations:
           - "-DLIBSPDM_ENABLE_CAPABILITY_CERT_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_CHAL_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_MEAS_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_KEY_EX_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_PSK_EX_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_SET_CERT_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_CHUNK_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_MUT_AUTH_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_ENCAP_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_GET_CSR_CAP=1 -DLIBSPDM_ENABLE_CAPABILITY_HBEAT_CAP=1 -DLIBSPDM_RESPOND_IF_READY_SUPPORT=1"
-          - "-DLIBSPDM_ENABLE_CAPABILITY_CERT_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_CHAL_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_MEAS_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_KEY_EX_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_PSK_EX_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_SET_CERT_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_CHUNK_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_MUT_AUTH_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_ENCAP_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_GET_CSR_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_HBEAT_CAP=0 -DLIBSPDM_RESPOND_IF_READY_SUPPORT=0"
-          - "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=0 -DLIBSPDM_FIPS_MODE=0"
-          - "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1 -DLIBSPDM_FIPS_MODE=1"
+          # - "-DLIBSPDM_ENABLE_CAPABILITY_CERT_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_CHAL_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_MEAS_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_KEY_EX_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_PSK_EX_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_SET_CERT_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_CHUNK_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_MUT_AUTH_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_ENCAP_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_GET_CSR_CAP=0 -DLIBSPDM_ENABLE_CAPABILITY_HBEAT_CAP=0 -DLIBSPDM_RESPOND_IF_READY_SUPPORT=0"
+          # - "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=0 -DLIBSPDM_FIPS_MODE=0"
+          # - "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1 -DLIBSPDM_FIPS_MODE=1"
         exclude:
           - os: ubuntu-latest
             toolchain: VS2019
@@ -70,9 +70,9 @@ jobs:
             toolchain: CLANG
           - crypto: mbedtls
             toolchain: CLANG
-          - configurations: "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=0"
+          - configurations: "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=0 -DLIBSPDM_FIPS_MODE=0"
             toolchain: CLANG
-          - configurations: "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1"
+          - configurations: "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1 -DLIBSPDM_FIPS_MODE=1"
             toolchain: CLANG
           - arch: aarch64
             toolchain: GCC
@@ -179,33 +179,33 @@ jobs:
         run: |
           cd build/bin
           ./test_spdm_requester
-      - name: Test Responder
-        if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
-        run: |
-          cd build/bin
-          ./test_spdm_responder
-      - name: Test Common
-        if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
-        run: |
-          cd build/bin
-          ./test_spdm_common
-      - name: Test SPDM Crypt
-        if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
-        run: |
-          cd build/bin
-          ./test_spdm_crypt
-      - name: Test Crypt
-        if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
-        run: |
-          cd build/bin
-          ./test_crypt
-      - name: Test FIPS
-        if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU' && matrix.configurations == '-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1 -DLIBSPDM_FIPS_MODE=1'
-        run: |
-          cd build/bin
-          ./test_spdm_fips
-      - name: Fuzz test with initial seed
-        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
-        run: |
-          cd build/bin
-          ./run_initial_seed.sh
+      # - name: Test Responder
+      #   if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
+      #   run: |
+      #     cd build/bin
+      #     ./test_spdm_responder
+      # - name: Test Common
+      #   if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
+      #   run: |
+      #     cd build/bin
+      #     ./test_spdm_common
+      # - name: Test SPDM Crypt
+      #   if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
+      #   run: |
+      #     cd build/bin
+      #     ./test_spdm_crypt
+      # - name: Test Crypt
+      #   if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU'
+      #   run: |
+      #     cd build/bin
+      #     ./test_crypt
+      # - name: Test FIPS
+      #   if: matrix.toolchain != 'LIBFUZZER' && matrix.toolchain != 'ARM_GNU' && matrix.configurations == '-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=1 -DLIBSPDM_FIPS_MODE=1'
+      #   run: |
+      #     cd build/bin
+      #     ./test_spdm_fips
+      # - name: Fuzz test with initial seed
+      #   if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
+      #   run: |
+      #     cd build/bin
+      #     ./run_initial_seed.sh

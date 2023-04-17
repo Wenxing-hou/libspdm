@@ -20,7 +20,7 @@ libspdm_return_t libspdm_get_encap_request_get_digest(libspdm_context_t *spdm_co
     if (!libspdm_is_capabilities_flag_supported(
             spdm_context, false,
             SPDM_GET_CAPABILITIES_REQUEST_FLAGS_CERT_CAP, 0)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
     }
 
     LIBSPDM_ASSERT(*encap_request_size >= sizeof(spdm_get_digest_request_t));

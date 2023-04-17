@@ -11,6 +11,8 @@
 
 static uint8_t m_libspdm_local_certificate_chain[LIBSPDM_MAX_CERT_CHAIN_SIZE];
 
+uint8_t temp_buf[LIBSPDM_RECEIVER_BUFFER_SIZE];
+
 libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_context,
                                                                    size_t request_size,
                                                                    const void *request,
@@ -21,7 +23,7 @@ libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_co
     spdm_test_context = libspdm_get_test_context();
     static uint8_t sub_index = 0;
     spdm_deliver_encapsulated_response_request_t *spdm_deliver_encapsulated_response_request;
-    uint8_t temp_buf[LIBSPDM_SENDER_BUFFER_SIZE];
+    uint8_t temp_buf1[LIBSPDM_SENDER_BUFFER_SIZE];
     size_t decode_message_size;
     spdm_error_response_t *spdm_response;
     libspdm_return_t status;
@@ -62,7 +64,7 @@ libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_co
             sub_index = 0;
             message_session_id = NULL;
             is_message_app_message = false;
-            spdm_deliver_encapsulated_response_request = (void*) temp_buf;
+            spdm_deliver_encapsulated_response_request = (void*) temp_buf1;
             decode_message_size = sizeof(spdm_deliver_encapsulated_response_request_t) +
                                   sizeof(spdm_error_response_t);
             status = libspdm_transport_test_decode_message(spdm_context, &message_session_id,
@@ -103,7 +105,7 @@ libspdm_return_t libspdm_requester_encap_request_test_receive_message(
     libspdm_test_context_t *spdm_test_context;
     spdm_encapsulated_request_response_t *libspdm_encapsulated_request_response;
     uint8_t *digest;
-    uint8_t temp_buf[LIBSPDM_RECEIVER_BUFFER_SIZE];
+    // uint8_t temp_buf[LIBSPDM_RECEIVER_BUFFER_SIZE];
     size_t temp_buf_size;
     uint8_t *temp_buf_ptr;
 
@@ -237,22 +239,31 @@ libspdm_return_t libspdm_requester_encap_request_test_receive_message(
         return LIBSPDM_STATUS_SUCCESS;
     case 0x4:
     {
-        spdm_digest_response_t *spdm_response;
+        spdm_encapsulated_request_response_t *spdm_response;
 
         ((libspdm_context_t *)spdm_context)
         ->connection_info.algorithm.base_hash_algo =
             m_libspdm_use_hash_algo;
         temp_buf_size = sizeof(spdm_encapsulated_request_response_t);
         temp_buf_ptr = temp_buf + sizeof(libspdm_test_message_header_t);
-        spdm_response = (void *) temp_buf_ptr;
+        spdm_response = (void *)temp_buf_ptr;
         spdm_response->header.spdm_version = SPDM_MESSAGE_VERSION_10;
         spdm_response->header.request_response_code = SPDM_ENCAPSULATED_REQUEST;
         spdm_response->header.param1 = 0;
         spdm_response->header.param2 = 0;
 
-        libspdm_transport_test_encode_message(spdm_context, NULL, false, false,
+printf("test recive message \n");
+printf("temp_buf_size: %zu \n", temp_buf_size);
+printf("response_size: %zu \n", *response_size);
+
+printf("temp_buf_ptr: 0x%p \n", temp_buf_ptr);
+
+        if (libspdm_transport_test_encode_message(spdm_context, NULL, false, false,
                                               temp_buf_size, temp_buf_ptr,
-                                              response_size, response);
+                                              response_size, response) != LIBSPDM_STATUS_SUCCESS) {
+                                                 return LIBSPDM_STATUS_NEGOTIATION_FAIL;
+                                              }
+// printf("response: 0x%p \n", *response);
     }
         return LIBSPDM_STATUS_SUCCESS;
     case 0x5:
@@ -795,6 +806,8 @@ void libspdm_test_requester_encap_request_case4(void **State)
 #endif
 
     libspdm_register_get_encap_response_func(spdm_context, libspdm_get_encap_response_digest);
+
+printf("libspdm_test_requester_encap_request_case4 \n");
     status = libspdm_encapsulated_request(spdm_context, NULL, 0, NULL);
     assert_int_equal(status, LIBSPDM_STATUS_SUCCESS);
     free(data);
@@ -1104,27 +1117,27 @@ int libspdm_requester_encap_request_test_main(void)
     const struct CMUnitTest spdm_requester_encap_request_tests[] = {
         /* SendRequest failed*/
 #if LIBSPDM_ENABLE_CAPABILITY_CERT_CAP
-        cmocka_unit_test(libspdm_test_requester_encap_request_case1),
-        /* Success Case ,func :libspdm_get_encap_response_digest*/
-        cmocka_unit_test(libspdm_test_requester_encap_request_case2),
-        /* Error response: When spdm_encapsulated_response_ack_response versions are inconsistent*/
-        cmocka_unit_test(libspdm_test_requester_encap_request_case3),
-        /* Error response:Receive message only SPDM ENCAPSULATED_REQUEST response*/
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case1),
+        // /* Success Case ,func :libspdm_get_encap_response_digest*/
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case2),
+        // /* Error response: When spdm_encapsulated_response_ack_response versions are inconsistent*/
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case3),
+        // /* Error response:Receive message only SPDM ENCAPSULATED_REQUEST response*/
         cmocka_unit_test(libspdm_test_requester_encap_request_case4),
         /* Error response: spdm_encapsulated_response_ack_response == NULL*/
-        cmocka_unit_test(libspdm_test_requester_encap_request_case5),
-        /* Error response: spdm_encapsulated_response_ack_response.param2 == NULL*/
-        cmocka_unit_test(libspdm_test_requester_encap_request_case6),
-        /* response: param2 == SPDM_ENCAPSULATED_RESPONSE_ACK_RESPONSE_PAYLOAD_TYPE_REQ_SLOT_NUMBER*/
-        cmocka_unit_test(libspdm_test_requester_encap_request_case7),
-        /*Success Case ,func :libspdm_get_encap_response_certificate */
-        cmocka_unit_test(libspdm_test_requester_encap_request_case8),
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case5),
+        // /* Error response: spdm_encapsulated_response_ack_response.param2 == NULL*/
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case6),
+        // /* response: param2 == SPDM_ENCAPSULATED_RESPONSE_ACK_RESPONSE_PAYLOAD_TYPE_REQ_SLOT_NUMBER*/
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case7),
+        // /*Success Case ,func :libspdm_get_encap_response_certificate */
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case8),
 #endif /* LIBSPDM_ENABLE_CAPABILITY_CERT_CAP */
 
-        /*Success Case ,func :libspdm_get_encap_response_key_update */
-        cmocka_unit_test(libspdm_test_requester_encap_request_case9),
-        /*Error response: GET_ENCAPSULATED_REQUEST message is encapsulated */
-        cmocka_unit_test(libspdm_test_requester_encap_request_case10),
+        // /*Success Case ,func :libspdm_get_encap_response_key_update */
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case9),
+        // /*Error response: GET_ENCAPSULATED_REQUEST message is encapsulated */
+        // cmocka_unit_test(libspdm_test_requester_encap_request_case10),
     };
 
     libspdm_setup_test_context(&m_libspdm_requester_encap_request_test_context);

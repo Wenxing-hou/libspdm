@@ -142,7 +142,7 @@ libspdm_return_t libspdm_encapsulated_request(libspdm_context_t *spdm_context,
             spdm_context, true,
             SPDM_GET_CAPABILITIES_REQUEST_FLAGS_ENCAP_CAP,
             SPDM_GET_CAPABILITIES_RESPONSE_FLAGS_ENCAP_CAP)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP22;
     }
 
     if (session_id != NULL) {
@@ -190,7 +190,7 @@ libspdm_return_t libspdm_encapsulated_request(libspdm_context_t *spdm_context,
         encapsulated_request_size = spdm_context->last_spdm_request_size;
         request_id = 0;
 #else /* LIBSPDM_ENABLE_CAPABILITY_CERT_CAP*/
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP21;
 #endif /* LIBSPDM_ENABLE_CAPABILITY_CERT_CAP*/
     } else {
 

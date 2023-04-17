@@ -7,6 +7,8 @@
 #include "internal/libspdm_requester_lib.h"
 #include "internal/libspdm_secured_message_lib.h"
 
+#include <stdio.h>
+
 libspdm_return_t libspdm_send_request(void *spdm_context, const uint32_t *session_id,
                                       bool is_app_message,
                                       size_t request_size, void *request)
@@ -158,6 +160,10 @@ libspdm_return_t libspdm_receive_response(void *spdm_context, const uint32_t *se
                        (session_id != NULL) ? *session_id : 0x0, status));
         return status;
     }
+
+printf("message: 0x%p \n", message);
+    printf("ready to decode \n");
+
 
     message_session_id = NULL;
     is_message_app_message = false;

@@ -132,11 +132,11 @@ static libspdm_return_t libspdm_process_encapsulated_response(
             spdm_context->encap_context.current_request_op_code, &encap_response_struct);
         LIBSPDM_ASSERT(status == LIBSPDM_STATUS_SUCCESS);
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
-            return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+            return LIBSPDM_STATUS_UNSUPPORTED_CAP20;
         }
         LIBSPDM_ASSERT(encap_response_struct.process_encap_response != NULL);
         if (encap_response_struct.process_encap_response == NULL) {
-            return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+            return LIBSPDM_STATUS_UNSUPPORTED_CAP20;
         }
         status = encap_response_struct.process_encap_response(
             spdm_context, encap_response_size, encap_response,
@@ -174,11 +174,11 @@ static libspdm_return_t libspdm_process_encapsulated_response(
         spdm_context->encap_context.current_request_op_code, &encap_response_struct);
     LIBSPDM_ASSERT(status == LIBSPDM_STATUS_SUCCESS);
     if (LIBSPDM_STATUS_IS_ERROR(status)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP20;
     }
     LIBSPDM_ASSERT(encap_response_struct.get_encap_request != NULL);
     if (encap_response_struct.get_encap_request == NULL) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP20;
     }
     status = encap_response_struct.get_encap_request(
         spdm_context, encap_request_size, encap_request);
@@ -518,7 +518,7 @@ libspdm_return_t libspdm_handle_encap_error_response_main(
         return LIBSPDM_STATUS_NOT_READY_PEER;
     }
 
-    return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+    return LIBSPDM_STATUS_UNSUPPORTED_CAP20;
 }
 
 #endif /* (LIBSPDM_ENABLE_CAPABILITY_MUT_AUTH_CAP) || (LIBSPDM_ENABLE_CAPABILITY_ENCAP_CAP)*/

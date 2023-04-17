@@ -99,7 +99,7 @@ libspdm_return_t libspdm_transport_test_encode_message(
         libspdm_test_get_secured_spdm_version;
 
     if (is_app_message && (session_id == NULL)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
     }
 
     if (session_id != NULL) {
@@ -107,11 +107,15 @@ libspdm_return_t libspdm_transport_test_encode_message(
             libspdm_get_secured_message_context_via_session_id(
                 spdm_context, *session_id);
         if (secured_message_context == NULL) {
-            return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+            return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
         }
+
+        transport_header_size = libspdm_transport_test_get_header_size(spdm_context);
 
         if (!is_app_message) {
             /* SPDM message to APP message*/
+            app_message = NULL;
+            app_message_size = transport_header_size + message_size + (LIBSPDM_TEST_ALIGNMENT - 1);
             status = libspdm_test_encode_message(NULL, message_size,
                                                  message,
                                                  &app_message_size,
@@ -127,7 +131,6 @@ libspdm_return_t libspdm_transport_test_encode_message(
             app_message_size = message_size;
         }
         /* APP message to secured message*/
-        transport_header_size = libspdm_transport_test_get_header_size(spdm_context);
         secured_message = (uint8_t *)*transport_message + transport_header_size;
         secured_message_size = *transport_message_size - transport_header_size;
         status = libspdm_encode_secured_message(
@@ -140,7 +143,7 @@ libspdm_return_t libspdm_transport_test_encode_message(
             return status;
         }
 
-        /* secured message to secured MCTP message*/
+        /* secured message to secured Test message*/
         status = libspdm_test_encode_message(
             session_id, secured_message_size, secured_message,
             transport_message_size, transport_message);
@@ -150,7 +153,7 @@ libspdm_return_t libspdm_transport_test_encode_message(
             return status;
         }
     } else {
-        /* SPDM message to normal MCTP message*/
+        /* SPDM message to normal Test message*/
         status = libspdm_test_encode_message(NULL, message_size, message,
                                              transport_message_size,
                                              transport_message);
@@ -224,7 +227,7 @@ libspdm_return_t libspdm_transport_test_decode_message(
         libspdm_test_get_secured_spdm_version;
 
     if ((session_id == NULL) || (is_app_message == NULL)) {
-        return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+        return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
     }
 
     secured_message_session_id = NULL;
@@ -248,7 +251,7 @@ libspdm_return_t libspdm_transport_test_decode_message(
             spdm_error.session_id = *secured_message_session_id;
             libspdm_set_last_spdm_error_struct(spdm_context,
                                                &spdm_error);
-            return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+            return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
         }
 
         /* Secured message to APP message*/
@@ -288,7 +291,7 @@ libspdm_return_t libspdm_transport_test_decode_message(
                 LIBSPDM_DEBUG((LIBSPDM_DEBUG_ERROR,
                                "transport_decode_message - expect encapsulated normal but got session (%08x)\n",
                                *secured_message_session_id));
-                return LIBSPDM_STATUS_UNSUPPORTED_CAP;
+                return LIBSPDM_STATUS_UNSUPPORTED_CAP19;
             }
         }
     } else {
