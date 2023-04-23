@@ -10,6 +10,8 @@
 #if (LIBSPDM_ENABLE_CAPABILITY_MUT_AUTH_CAP) || (LIBSPDM_ENABLE_CAPABILITY_ENCAP_CAP)
 
 static uint8_t m_libspdm_local_certificate_chain[LIBSPDM_MAX_CERT_CHAIN_SIZE];
+static uint8_t temp_buf[LIBSPDM_SENDER_BUFFER_SIZE];
+static uint8_t temp_buff[LIBSPDM_MAX_SPDM_MSG_SIZE];
 
 libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_context,
                                                                    size_t request_size,
@@ -21,7 +23,7 @@ libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_co
     spdm_test_context = libspdm_get_test_context();
     static uint8_t sub_index = 0;
     spdm_deliver_encapsulated_response_request_t *spdm_deliver_encapsulated_response_request;
-    uint8_t temp_buf[LIBSPDM_SENDER_BUFFER_SIZE];
+    uint8_t send_temp_buf[LIBSPDM_SENDER_BUFFER_SIZE];
     size_t decode_message_size;
     spdm_error_response_t *spdm_response;
     libspdm_return_t status;
@@ -62,7 +64,7 @@ libspdm_return_t libspdm_requester_encap_request_test_send_message(void *spdm_co
             sub_index = 0;
             message_session_id = NULL;
             is_message_app_message = false;
-            spdm_deliver_encapsulated_response_request = (void*) temp_buf;
+            spdm_deliver_encapsulated_response_request = (void*) send_temp_buf;
             decode_message_size = sizeof(spdm_deliver_encapsulated_response_request_t) +
                                   sizeof(spdm_error_response_t);
             status = libspdm_transport_test_decode_message(spdm_context, &message_session_id,
@@ -103,7 +105,6 @@ libspdm_return_t libspdm_requester_encap_request_test_receive_message(
     libspdm_test_context_t *spdm_test_context;
     spdm_encapsulated_request_response_t *libspdm_encapsulated_request_response;
     uint8_t *digest;
-    uint8_t temp_buf[LIBSPDM_RECEIVER_BUFFER_SIZE];
     size_t temp_buf_size;
     uint8_t *temp_buf_ptr;
 
@@ -297,7 +298,6 @@ libspdm_return_t libspdm_requester_encap_request_test_receive_message(
         }
         else if (sub_index == 1)
         {
-            uint8_t temp_buff[LIBSPDM_MAX_SPDM_MSG_SIZE];
             size_t temp_buff_size;
             uint8_t *temp_buff_ptr;
 
