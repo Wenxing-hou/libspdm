@@ -22,6 +22,8 @@
 #include "library/memlib.h"
 #include "spdm_device_secret_lib_internal.h"
 
+#if LIBSPDM_CERT_PARSE_SUPPORT
+
 bool libspdm_read_responder_root_public_certificate(uint32_t base_hash_algo,
                                                     uint32_t base_asym_algo,
                                                     void **data, size_t *size,
@@ -977,3 +979,6 @@ bool libspdm_read_responder_public_certificate_chain_by_size(
     free(file_data);
     return true;
 }
+
+
+#endif

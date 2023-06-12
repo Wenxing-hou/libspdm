@@ -166,8 +166,10 @@ libspdm_return_t libspdm_set_data(void *spdm_context, libspdm_data_type_t data_t
     uint16_t data16;
 #if !(LIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT)
     bool status;
+#if LIBSPDM_CERT_PARSE_SUPPORT
     const uint8_t *cert_buffer;
     size_t cert_buffer_size;
+#endif
 #endif
 
     if (spdm_context == NULL || data == NULL || data_type >= LIBSPDM_DATA_MAX) {
@@ -450,7 +452,7 @@ libspdm_return_t libspdm_set_data(void *spdm_context, libspdm_data_type_t data_t
         data_size = data_size -
                     (sizeof(spdm_cert_chain_t) +
                      libspdm_get_hash_size(context->connection_info.algorithm.base_hash_algo));
-
+#if LIBSPDM_CERT_PARSE_SUPPORT
         /* Get leaf cert from cert chain */
         status = libspdm_x509_get_cert_from_cert_chain(data, data_size, -1,
                                                        &cert_buffer, &cert_buffer_size);
@@ -459,7 +461,6 @@ libspdm_return_t libspdm_set_data(void *spdm_context, libspdm_data_type_t data_t
         }
 
         status = false;
-#if LIBSPDM_CERT_PARSE_SUPPORT
 #if (LIBSPDM_RSA_SSA_SUPPORT) || (LIBSPDM_RSA_PSS_SUPPORT)
         if (!status) {
             status = libspdm_rsa_get_public_key_from_x509(
