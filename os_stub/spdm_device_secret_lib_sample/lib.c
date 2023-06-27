@@ -12,7 +12,6 @@
 #if defined(_MSC_VER) || (defined(__clang__) && (defined (LIBSPDM_CPU_AARCH64) || \
     defined(LIBSPDM_CPU_ARM)))
 #else
-    #include <fcntl.h>
     #include <unistd.h>
     #include <sys/stat.h>
 #endif
@@ -24,6 +23,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "library/memlib.h"
 #include "spdm_device_secret_lib_internal.h"
@@ -1616,10 +1616,17 @@ bool libspdm_write_certificate_to_nvm(uint8_t slot_id, const void * cert_chain,
 
     fclose(fp_out);
 #else
+#ifdef _WIN32
+    if ((fp_out = open(file_name, O_WRONLY | O_CREAT | O_BINARY, S_IRWXU)) == -1) {
+        printf("Unable to open file %s\n", file_name);
+        return false;
+    }
+#else
     if ((fp_out = open(file_name, O_WRONLY | O_CREAT, S_IRWXU)) == -1) {
         printf("Unable to open file %s\n", file_name);
         return false;
     }
+#endif
 
     if ((write(fp_out, cert_chain, cert_chain_size)) != cert_chain_size)
     {
