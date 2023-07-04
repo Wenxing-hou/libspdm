@@ -67,11 +67,9 @@ jobs:
             toolchain: LIBFUZZER
           - crypto: openssl
             arch: ia32
-          - os: windows-latest
+          - arch: ia32
             toolchain: CLANG
           - target: Debug
-            toolchain: CLANG
-          - crypto: mbedtls
             toolchain: CLANG
           - configurations: "-DLIBSPDM_RECORD_TRANSCRIPT_DATA_SUPPORT=0 -DLIBSPDM_FIPS_MODE=0"
             toolchain: CLANG
@@ -101,7 +99,7 @@ jobs:
             toolchain: ARM_GNU
     steps:
       - name: Toolchain Setup - VS2019 (x64)
-        if: matrix.toolchain == 'VS2019' && matrix.arch == 'x64'
+        if: (matrix.toolchain == 'VS2019' || matrix.toolchain == 'CLANG') && matrix.arch == 'x64'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
@@ -110,8 +108,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x86
-      - name:  Toolchain Setup - Clang
-        if:  matrix.toolchain == 'CLANG' || matrix.toolchain == 'LIBFUZZER' && matrix.os == 'ubuntu-latest'
+      - name:  Toolchain Setup - Clang (Linux)
+        if:  matrix.os == 'ubuntu-latest' && (matrix.toolchain == 'CLANG' || matrix.toolchain == 'LIBFUZZER')
         run: |
           sudo apt-get update
           sudo apt-get install llvm
