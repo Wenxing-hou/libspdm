@@ -85,7 +85,6 @@ static libspdm_return_t libspdm_try_get_certificate(libspdm_context_t *spdm_cont
     size_t transport_header_size;
     libspdm_session_info_t *session_info;
     libspdm_session_state_t session_state;
-    bool chunk_enabled;
 
     /* -=[Check Parameters Phase]=- */
     LIBSPDM_ASSERT(slot_id < SPDM_MAX_SLOT_COUNT);
@@ -118,17 +117,6 @@ static libspdm_return_t libspdm_try_get_certificate(libspdm_context_t *spdm_cont
     }
 
     libspdm_reset_message_buffer_via_request_code(spdm_context, session_info, SPDM_GET_CERTIFICATE);
-
-    chunk_enabled =
-        libspdm_is_capabilities_flag_supported(spdm_context, true,
-                                               SPDM_GET_CAPABILITIES_REQUEST_FLAGS_CHUNK_CAP,
-                                               SPDM_GET_CAPABILITIES_RESPONSE_FLAGS_CHUNK_CAP);
-
-    if (chunk_enabled) {
-        length = 0xffff;
-    } else {
-        length = LIBSPDM_MIN(length, LIBSPDM_MAX_CERT_CHAIN_BLOCK_LEN);
-    }
 
     remainder_length = 0;
     total_responder_cert_chain_buffer_length = 0;
@@ -257,11 +245,6 @@ static libspdm_return_t libspdm_try_get_certificate(libspdm_context_t *spdm_cont
                                                        spdm_response->remainder_length;
         } else if (spdm_request->offset + spdm_response->portion_length +
                    spdm_response->remainder_length != total_responder_cert_chain_buffer_length) {
-            libspdm_release_receiver_buffer (spdm_context);
-            status = LIBSPDM_STATUS_INVALID_MSG_FIELD;
-            goto done;
-        }
-        if (chunk_enabled && (spdm_response->remainder_length != 0)) {
             libspdm_release_receiver_buffer (spdm_context);
             status = LIBSPDM_STATUS_INVALID_MSG_FIELD;
             goto done;
