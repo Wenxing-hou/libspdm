@@ -998,6 +998,50 @@ void libspdm_test_crypt_ecdsa_palindrome(void **state)
     }
 }
 
+void libspdm_test_crypt_spdm_verify_cert_chain_data(void **state)
+{
+    bool status;
+    uint8_t *file_buffer;
+    size_t file_buffer_size;
+
+    if ((LIBSPDM_RSA_SSA_2048_SUPPORT) && (LIBSPDM_SHA256_SUPPORT)) {
+        status = libspdm_read_input_file("rsa2048/end_requester.cert.der",
+                                         (void **)&file_buffer, &file_buffer_size);
+        assert_true(status);
+
+        status = libspdm_verify_cert_chain_data(file_buffer, file_buffer_size,
+                                                   SPDM_ALGORITHMS_BASE_ASYM_ALGO_TPM_ALG_RSASSA_2048,
+                                                   SPDM_ALGORITHMS_BASE_HASH_ALGO_TPM_ALG_SHA_256,
+                                                   true, true);
+        assert_true(status);
+
+        status = libspdm_verify_cert_chain_data(file_buffer, file_buffer_size,
+                                                   SPDM_ALGORITHMS_BASE_ASYM_ALGO_TPM_ALG_RSASSA_2048,
+                                                   SPDM_ALGORITHMS_BASE_HASH_ALGO_TPM_ALG_SHA_256,
+                                                   true, false);
+        assert_true(status);
+        free(file_buffer);
+    }
+
+    if ((LIBSPDM_ECDSA_P256_SUPPORT) && (LIBSPDM_SHA256_SUPPORT)) {
+        status = libspdm_read_input_file("ecp256/end_responder.cert.der",
+                                         (void **)&file_buffer, &file_buffer_size);
+        assert_true(status);
+        status = libspdm_verify_cert_chain_data(file_buffer, file_buffer_size,
+                                                   SPDM_ALGORITHMS_BASE_ASYM_ALGO_TPM_ALG_ECDSA_ECC_NIST_P256,
+                                                   SPDM_ALGORITHMS_BASE_HASH_ALGO_TPM_ALG_SHA_256,
+                                                   false, true);
+        assert_true(status);
+
+        status = libspdm_verify_cert_chain_data(file_buffer, file_buffer_size,
+                                                   SPDM_ALGORITHMS_BASE_ASYM_ALGO_TPM_ALG_ECDSA_ECC_NIST_P256,
+                                                   SPDM_ALGORITHMS_BASE_HASH_ALGO_TPM_ALG_SHA_256,
+                                                   false, false);
+        assert_false(status);
+        free(file_buffer);
+    }
+}
+
 int libspdm_crypt_lib_setup(void **state)
 {
     return 0;
@@ -1027,6 +1071,8 @@ int libspdm_crypt_lib_test_main(void)
         cmocka_unit_test(libspdm_test_crypt_rsa_palindrome),
 
         cmocka_unit_test(libspdm_test_crypt_ecdsa_palindrome),
+
+        cmocka_unit_test(libspdm_test_crypt_spdm_verify_cert_chain_data),
     };
 
     return cmocka_run_group_tests(spdm_crypt_lib_tests,
