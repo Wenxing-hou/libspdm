@@ -347,6 +347,7 @@ static libspdm_return_t libspdm_try_send_receive_key_exchange(
     spdm_request_size = message_size - transport_header_size -
                         spdm_context->local_context.capability.transport_tail_size;
 
+    LIBSPDM_ASSERT (spdm_request_size >= sizeof(libspdm_key_exchange_request_mine_t));
     spdm_request->header.spdm_version = libspdm_get_connection_version (spdm_context);
     spdm_request->header.request_response_code = SPDM_KEY_EXCHANGE;
     spdm_request->header.param1 = measurement_hash_type;

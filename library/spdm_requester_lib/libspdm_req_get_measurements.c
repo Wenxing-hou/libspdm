@@ -233,14 +233,19 @@ static libspdm_return_t libspdm_try_get_measurement(libspdm_context_t *spdm_cont
     spdm_request_size = message_size - transport_header_size -
                         spdm_context->local_context.capability.transport_tail_size;
 
+    LIBSPDM_ASSERT (spdm_request_size >= sizeof(spdm_request->header) + SPDM_REQ_CONTEXT_SIZE);
     spdm_request->header.spdm_version = libspdm_get_connection_version (spdm_context);
     spdm_request->header.request_response_code = SPDM_GET_MEASUREMENTS;
     spdm_request->header.param1 = request_attribute;
     spdm_request->header.param2 = measurement_operation;
     if ((request_attribute & SPDM_GET_MEASUREMENTS_REQUEST_ATTRIBUTES_GENERATE_SIGNATURE) != 0) {
         if (spdm_request->header.spdm_version >= SPDM_MESSAGE_VERSION_11) {
+            LIBSPDM_ASSERT (spdm_request_size >= sizeof(spdm_get_measurements_request_t) +
+                            SPDM_REQ_CONTEXT_SIZE);
             spdm_request_size = sizeof(spdm_get_measurements_request_t);
         } else {
+            LIBSPDM_ASSERT (spdm_request_size >= sizeof(spdm_get_measurements_request_t) -
+                            sizeof(spdm_request->slot_id_param));
             spdm_request_size = sizeof(spdm_get_measurements_request_t) -
                                 sizeof(spdm_request->slot_id_param);
         }
