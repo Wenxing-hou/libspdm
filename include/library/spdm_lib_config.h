@@ -74,6 +74,10 @@
 #define LIBSPDM_ENABLE_CAPABILITY_EVENT_CAP 1
 #endif
 
+#ifndef LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP
+#define LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP 1
+#endif
+
 /* Includes SPDM 1.3 features for CSR messages. If enabled then LIBSPDM_ENABLE_CAPABILITY_CSR_CAP
  * must also be enabled.
  */
@@ -204,6 +208,12 @@
 #ifndef LIBSPDM_MAX_MEL_BLOCK_LEN
 #define LIBSPDM_MAX_MEL_BLOCK_LEN 1024
 #endif
+
+#if LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP
+#ifndef LIBSPDM_MAX_KEY_PAIR_COUNT
+#define LIBSPDM_MAX_KEY_PAIR_COUNT 16
+#endif
+#endif /* LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP */
 
 /* To ensure integrity in communication between the Requester and the Responder libspdm calculates
  * cryptographic digests and signatures over multiple requests and responses. This value specifies
