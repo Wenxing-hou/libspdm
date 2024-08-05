@@ -2229,3 +2229,87 @@ bool libspdm_event_get_types(
     return true;
 }
 #endif /* LIBSPDM_ENABLE_CAPABILITY_EVENT_CAP */
+
+#if LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP
+// typedef struct {
+//     uint16_t capabilities;
+//     uint16_t key_usage_capabilities;
+//     uint16_t current_key_usage;
+//     uint32_t asym_algo_capabilities;
+//     uint32_t current_asym_algo;
+//     uint16_t public_key_info_len;
+//     uint8_t assoc_cert_slot_mask;
+//     uint8_t public_key_info[SPDM_MAX_PUBLIC_KEY_INFO_LEN];
+// } libspdm_key_pair_info_t;
+
+/**
+ * read the key pair info of the key_pair_id.
+ *
+ * @param  spdm_context               A pointer to the SPDM context.
+ * @param  key_pair_id                Indicate which key pair ID's information to retrieve.
+ *
+ * @param  total_key_pairs            Indicate the total number of key pairs on the responder.
+ * @param  capabilities               Indicate the capabilities of the requested key pairs.
+ * @param  key_usage_capabilities     Indicate the key usages the responder allows.
+ * @param  current_key_usage          Indicate the currently configured key usage for the requested key pairs ID.
+ * @param  asym_algo_capabilities     Indicate the asymmetric algorithms the Responder supports for this key pair ID.
+ * @param  current_asym_algo          Indicate the currently configured asymmetric algorithm for this key pair ID..
+ * @param  public_key_info_len        On input, indicate the size in bytes of the destination buffer to store.
+ *                                    On output, indicate the size in bytes of the public_key_info.
+ * @param  assoc_cert_slot_mask       This field is a bit mask representing the currently associated certificate slots.
+ * @param  public_key_info            A pointer to a destination buffer to store the public_key_info.
+ *
+ * @retval true  get key pair info successfully.
+ * @retval false get key pair info failed.
+ **/
+bool libspdm_read_key_pair_info(
+    void *spdm_context,
+    uint8_t key_pair_id,
+    uint8_t *total_key_pairs,
+    uint16_t *capabilities,
+    uint16_t *key_usage_capabilities,
+    uint16_t *current_key_usage,
+    uint32_t *asym_algo_capabilities,
+    uint32_t *current_asym_algo,
+    uint16_t *public_key_info_len,
+    uint8_t *assoc_cert_slot_mask)
+{
+    // libspdm_key_pair_info_t key_pair_info[LIBSPDM_MAX_KEY_PAIR_COUNT];
+
+    // /*provisioned key pair info*/
+    // uint8_t public_key_info_rsa2048[] = {0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7,
+    //                                      0x0D, 0x01, 0x01, 0x01, 0x05, 0x00};
+    // *total_key_pairs = 1;
+    // key_pair_info[0].capabilities = SPDM_KEY_PAIR_CAP_GEN_KEY_CAP;
+    // key_pair_info[0].key_usage_capabilities = SPDM_KEY_USAGE_BIT_MASK_KEY_EX_USE;
+    // key_pair_info[0].current_key_usage = SPDM_KEY_USAGE_BIT_MASK_KEY_EX_USE;
+    // key_pair_info[0].asym_algo_capabilities = SPDM_KEY_PAIR_ASYM_ALGO_CAP_RSA2048;
+    // key_pair_info[0].current_asym_algo = SPDM_KEY_PAIR_ASYM_ALGO_CAP_RSA2048;
+    // key_pair_info[0].assoc_cert_slot_mask = 0x02;
+    // key_pair_info[0].public_key_info_len = (uint16_t)sizeof(public_key_info_rsa2048);
+    // libspdm_copy_mem(key_pair_info[0].public_key_info, key_pair_info[0].public_key_info_len,
+    //                  public_key_info_rsa2048, key_pair_info[0].public_key_info_len);
+
+    // /*check*/
+    // if (key_pair_id > *total_key_pairs) {
+    //     return false;
+    // }
+
+    // if (*public_key_info_len < sizeof(public_key_info_rsa2048)) {
+    //     return false;
+    // }
+
+    // /*output*/
+    // *capabilities = key_pair_info[key_pair_id - 1].capabilities;
+    // *key_usage_capabilities = key_pair_info[key_pair_id - 1].key_usage_capabilities;
+    // *current_key_usage = key_pair_info[key_pair_id - 1].current_key_usage;
+    // *asym_algo_capabilities = key_pair_info[key_pair_id - 1].asym_algo_capabilities;
+    // *current_asym_algo = key_pair_info[key_pair_id - 1].current_asym_algo;
+    // *assoc_cert_slot_mask = key_pair_info[key_pair_id - 1].assoc_cert_slot_mask;
+    // *public_key_info_len = key_pair_info[key_pair_id - 1].public_key_info_len;
+    // libspdm_copy_mem(public_key_info, *public_key_info_len,
+    //                  key_pair_info[key_pair_id - 1].public_key_info, *public_key_info_len);
+
+    return true;
+}
+#endif /* LIBSPDM_ENABLE_CAPABILITY_GET_KEY_PAIR_INFO_CAP */
