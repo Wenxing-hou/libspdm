@@ -243,5 +243,8 @@ int main(void)
     }
     #endif /* LIBSPDM_ENABLE_VENDOR_DEFINED_MESSAGES */
 
+
+
+
     return return_value;
 }
