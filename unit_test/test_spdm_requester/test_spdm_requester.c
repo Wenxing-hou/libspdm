@@ -97,9 +97,7 @@ int libspdm_requester_set_key_pair_info_error_test_main(void);
 int main(void)
 {
     int return_value = 0;
-    if (libspdm_requester_get_version_test_main() != 0) {
-        return_value = 1;
-    }
+
     if (libspdm_requester_get_version_error_test_main() != 0) {
         return_value = 1;
     }
@@ -276,6 +274,10 @@ int main(void)
         return_value = 1;
     }
     #endif /* LIBSPDM_ENABLE_VENDOR_DEFINED_MESSAGES */
+
+    if (libspdm_requester_get_version_test_main() != 0) {
+        return_value = 1;
+    }
 
     return return_value;
 }
